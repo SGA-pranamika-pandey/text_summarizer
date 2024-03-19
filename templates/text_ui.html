@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Summarizer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+.center-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    overflow: auto; /* Allow scrollbars if content exceeds container */
+    max-height: 80vh;
+}
+
+textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.spinner {
+    display: none;
+}
+
+.spinner::after {
+    content: '';
+    width: 30px;
+    height: 30px;
+    border: 3px solid #007bff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spinner 0.6s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -15px;
+    margin-left: -15px;
+}
+
+@keyframes spinner {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+<body>
+    <div class="center-screen">
+        <div class="container">
+            <h1>Text Summarizer</h1>
+            <textarea id="textInput" rows="10" cols="50" placeholder="Enter your text here..."></textarea><br>
+            <button onclick="text_sum()">Summarize Text</button>
+            <div id="spinner" class="spinner"></div>
+            <div id="summary" class="summary"></div>
+        </div>
+    </div>
+
+    <script>
+        async function text_sum() {
+    const text = document.getElementById('textInput').value;
+    const spinner = document.getElementById('spinner');
+    const summaryDiv = document.getElementById('summary');
+    const button = document.querySelector('button');
+
+    // Show spinner and disable button
+    spinner.style.display = 'block';
+    button.disabled = true;
+    summaryDiv.innerText = '';
+
+    const response = await fetch('/summarize', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ text: text })
+    });
+
+     // Hide spinner and enable button
+     spinner.style.display = 'none';
+     button.disabled = false;
+ 
+     const data = await response.json();
+     summaryDiv.innerText = data.summary;
+}
+    </script>
+</body>
+</html>

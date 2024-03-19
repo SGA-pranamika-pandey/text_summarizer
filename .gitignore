@@ -1,0 +1,8 @@
+# IDE config files
+__pycache__
+
+# Build folders
+venv/
+
+# Env file
+.env
